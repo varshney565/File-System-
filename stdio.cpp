@@ -229,6 +229,7 @@ FILE *fopen(const char *path, const char *mode)
   return stream;
 }
 
+// Discards any buffered data (both read and write buffers)
 int fpurge(FILE *stream)
 {
     if (!stream) return EOF;
@@ -238,6 +239,7 @@ int fpurge(FILE *stream)
     return 0;
 }
 
+// Flushes write buffer to the underlying file descriptor
 int fflush(FILE *stream)
 {
     if (!stream) return EOF;
@@ -248,6 +250,8 @@ int fflush(FILE *stream)
     }
     return 0;
 }
+
+// Reads a single character from 'stream', returns EOF on end-of-file or error
 int fgetc(FILE *stream)
 {
     if (!stream) return EOF;
@@ -261,6 +265,7 @@ int fgetc(FILE *stream)
     return c;
 }
 
+// Writes a single character to 'stream', returns the character or EOF on error
 int fputc(int c, FILE *stream)
 {
     if (!stream) return EOF;
@@ -273,17 +278,15 @@ int fputc(int c, FILE *stream)
     return EOF;
 }
 
-// ** Replace with your own comments **
-// fread (Sample input/return parameter comments - For full behavior, consult C documentation for stdio functions)
-// Reads data from a given stream into a ptr buffer
-// Input parameters: ptr = pointer to the buffer where the data read from the file will be stored
-//					 size = the size(in bytes) of each element to be read,
-//					 nmemb(count) = the number of elements that will be read from the file, each one with "size" bytes
-//					 stream = pointer to the file to read from
-// Returns: 		 total number of elements read.  (Note: can be less than requested items)
-//					 (Note: size_t is an unsigned integer type that is often used as the return type to represent 
-//					   returned sizes of objects.  By using size_t vs int, you can guarantee a non-neg value that can represent
-//					   the sizes of the largest objects possible in memory)
+// fread:
+// Reads up to 'nmemb' elements each of 'size' bytes from 'stream' into the buffer 'ptr'.
+// Input parameters:
+//   ptr   - pointer to destination buffer for read data
+//   size  - size in bytes of each element to read
+//   nmemb - number of elements to read
+//   stream- pointer to an open FILE object
+// Returns:
+//   the number of full elements successfully read (may be less than 'nmemb' on EOF or error)
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     if (!stream || !ptr || size == 0) return 0;
@@ -298,7 +301,8 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
     return count / size;
 }
 
-
+//  Write nmemb elements of size bytes each from the user buffer to the stream.
+//  Return the number of full elements actually written
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     if (!stream || !ptr || size == 0) return 0;
@@ -313,7 +317,7 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
     return written / size;
 }
 
-
+// Reads a line (up to size-1 chars) into 'str', returns str or NULL on EOF
 char *fgets(char *str, int size, FILE *stream)
 {
     if (!stream || size <= 0 || !str) return NULL;
@@ -330,6 +334,7 @@ char *fgets(char *str, int size, FILE *stream)
     return str;
 }
 
+// Writes the null-terminated string 'str' to 'stream', returns number of bytes written or EOF
 int fputs(const char *str, FILE *stream)
 {
     if (!stream || !str) return EOF;
@@ -348,6 +353,7 @@ int feof(FILE *stream)
 	return stream->eof == true;
 }
 
+// Repositions file offset via lseek and resets buffer state
 int fseek(FILE *stream, long offset, int whence)
 {
     if (!stream) return -1;
@@ -358,6 +364,7 @@ int fseek(FILE *stream, long offset, int whence)
     return 0;
 }
 
+// Flushes pending writes, closes file descriptor, and frees resources
 int fclose(FILE *stream)
 {
     if (!stream) return EOF;
